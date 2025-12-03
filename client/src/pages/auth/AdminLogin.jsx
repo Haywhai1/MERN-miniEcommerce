@@ -16,7 +16,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   try {
     const res = await API.post("/api/admin/login", form);
-    console.log("Login response:", res.data);
+    console.log("AdminLogin response:", res.data);
 
     const { token, admin } = res.data;
     if (!token || !admin) throw new Error("Invalid login");
@@ -24,7 +24,7 @@ const handleSubmit = async (e) => {
     login(admin, token, true);  // save admin as user
     navigate("/admin/dashboard"); // absolute path
   } catch (err) {
-    setMessage(err.response?.data?.error || "Login failed");
+    setMessage(err.response?.data?.msg || "Login failed");
   }
 };
 

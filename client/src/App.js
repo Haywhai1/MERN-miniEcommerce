@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 
 // Pages
@@ -13,22 +13,31 @@ import AdminLogin from "./pages/auth/AdminLogin.jsx";
 import AdminRegister from "./pages/auth/AdminRegister.jsx";
 
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AdminRoute from "./components/ProtectedRoute.jsx";
+
+import ProductForm from "./pages/product/ProductForm.jsx";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
-
-          {/* User Routes */}
           <Route path="/login" element={<UserLogin />} />
           <Route path="/register" element={<UserRegister />} />
 
-          {/* Admin Routes */}
+          {/* Admin Auth */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/register" element={<AdminRegister />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+          {/* Admin Protected Routes (nested) */}
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="create-product" element={<ProductForm />} />
+            <Route path="/admin/edit-product/:id" element={<ProductForm />} />
+            <Route index element={<Navigate to="dashboard" replace />} /> {/* /admin → /admin/dashboard */}
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

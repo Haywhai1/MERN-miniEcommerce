@@ -23,25 +23,19 @@ const Home = () => {
   };
 
   return (
-    <div className="">
-      <Navbar/>
-      <div className="grid 
-                    grid-cols-2 
-                    sm:grid-cols-3 
-                    md:grid-cols-4 
-                    lg:grid-cols-5 
-                    xl:grid-cols-6 
-                    gap-6 sm:gap-6 p-6 
-                    bg-gray-50 
-                    ">
-      {products.map((p) => (
-        <ProductCard 
-        key={p._id} 
-        product={p} 
-        onCart={handleCart}
-        />
-      ))}
-    </div>
+    <div className="relative">
+      <Navbar className="fixed top-0 left-0 w-full" />
+
+      <div
+        className="pt-28 grid 
+        grid-cols-2 sm:grid-cols-3 md:grid-cols-3 
+        lg:grid-cols-4 xl:grid-cols-5 
+        gap-6 p-6 bg-gray-50"
+      >
+        {products.map((p) => (
+          <ProductCard key={p._id} product={p} onCart={handleCart} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -16,7 +16,7 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const res = await API.post("/api/auth/login", form); // user login endpoint
-      console.log("Login response:", res.data);
+      console.log("UserLogin response:", res.data);
 
       const { token, user } = res.data;
       if (!token || !user) throw new Error("Invalid login");

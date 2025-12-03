@@ -3,7 +3,7 @@ import React from "react";
 const ProductCard = ({ product, onEdit, onDelete, onCart }) => {
   return (
     <div
-      className="bg-white border rounded-xl shadow-sm hover:shadow-lg 
+      className="bg-white border rounded-xl shadow-sm hover:shadow-lg pt-4
                  transition-all duration-200 flex flex-col 
                  w-full max-w-xs mx-auto"
     >
@@ -20,21 +20,22 @@ const ProductCard = ({ product, onEdit, onDelete, onCart }) => {
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
 
-        <h3 className="text-lg font-semibold text-gray-800 leading-tight truncate">
-          {product.name}
-        </h3>
+        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 leading-tight truncate">
+  {product.name}
+</h3>
 
-        <p className="text-gray-500 text-sm mt-2 line-clamp-2">
+
+        <p className="text-gray-500 text-sm truncate">
           {product.description}
         </p>
 
-        <p className="font-bold text-gray-900 text-lg mt-3">
+        <p className="font-bold text-gray-900 text-lg ">
           ${product.price}
         </p>
 
         {/* Admin Buttons */}
         {onEdit && (
-          <div className="flex gap-2 mt-auto pt-3">
+          <div className="flex gap-2 mt-auto pt-1">
             <button
               onClick={() => onEdit(product)}
               className="flex-1 bg-green-500 text-white text-sm py-1.5 rounded-md 
@@ -57,7 +58,7 @@ const ProductCard = ({ product, onEdit, onDelete, onCart }) => {
          {onCart && (
           <button
               onClick={() => onCart(product)}
-              className="flex-1 bg-orange-500 text-white text-sm py-1.5 rounded-md 
+              className="flex-1 bg-orange-500 text-white text-sm py-1.5 rounded-md mt-1
                          hover:bg-orange-600 transition"
             >
               Add to Cart
