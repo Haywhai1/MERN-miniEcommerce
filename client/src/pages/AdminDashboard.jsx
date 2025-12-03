@@ -34,6 +34,7 @@ const AdminDashboard = () => {
     try {
       await API.delete(`/api/products/${id}`);
       setProducts(products.filter((p) => p._id !== id));
+      alert('Product deleted sucessfully.');
     } catch (err) {
       console.error(err);
     }
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
       {/* Floating Add Product Button */}
       <button
         onClick={() => navigate("/admin/create-product")}
-        className="fixed bottom-8 right-8 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+        className="fixed bottom-8 right-8 bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110"
         title="Add New Product"
       >
         <PlusIcon className="w-6 h-6" />

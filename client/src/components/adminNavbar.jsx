@@ -4,7 +4,7 @@ const AdminNavbar = () => {
   return (
     <Navbar
       className="fixed top-0 left-0 w-full" 
-      themeColor="green"
+      themeColor="orange"
       loginPath="/admin/login"
       brand="miniEcommerce Admin"
     />

@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar.jsx";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -16,11 +17,35 @@ const Home = () => {
       }
     };
     fetchProducts();
+
+    // Load cart from localStorage on page load
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
   }, []);
 
-  const handleCart = (product) => {
-    alert(`${product.name} added to carts`);
-  };
+const handleCart = (product) => {
+  const existing = cart.find((item) => item._id === product._id);
+
+  let updatedCart;
+  if (existing) {
+    updatedCart = cart.map((item) =>
+      item._id === product._id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+  } else {
+    updatedCart = [...cart, { ...product, quantity: 1 }];
+  }
+
+  setCart(updatedCart);
+  localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+  // 🔥 Notify Navbar that cart changed
+  window.dispatchEvent(new Event("cartUpdated"));
+
+  alert(`${product.name} added to cart`);
+};
+
 
   return (
     <div className="relative">

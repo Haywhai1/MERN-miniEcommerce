@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 const UserNavbar = () => {
   return (
     <Navbar
-      themeColor="orange"
+      themeColor="green"
       loginPath="/login"
       brand="miniEcommerce"
     />

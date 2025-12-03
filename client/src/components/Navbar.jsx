@@ -3,35 +3,39 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   UserIcon,
-  ShoppingBagIcon,
-  HeartIcon,
   ShoppingCartIcon,
   Bars3Icon,
 } from "@heroicons/react/24/outline";
 
 const Navbar = ({
-  themeColor = "orange",
+  themeColor = "green",
   loginPath = "/login",
   brand = "miniEcommerce",
   className = "",
 }) => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
   const menuRef = useRef(null);
 
   const isLoggedIn = !!user;
 
   const toggleMenu = () => setShowAccountMenu((prev) => !prev);
 
+  // Load & sync cart
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowAccountMenu(false);
-      }
+    const loadCart = () => {
+      const saved = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartItems(saved);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    loadCart();
+    window.addEventListener("cartUpdated", loadCart);
+
+    return () => window.removeEventListener("cartUpdated", loadCart);
   }, []);
 
   const handleLoginLogout = () => {
@@ -40,7 +44,6 @@ const Navbar = ({
     else navigate(loginPath);
   };
 
-  // Map themeColor prop to Tailwind bg classes for button
   const colorMap = {
     orange: "bg-orange-400 hover:bg-orange-500",
     green: "bg-green-500 hover:bg-green-600",
@@ -50,6 +53,9 @@ const Navbar = ({
   };
 
   const buttonColorClasses = colorMap[themeColor] || colorMap.orange;
+
+  // Cart count
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav
@@ -63,15 +69,25 @@ const Navbar = ({
           <h2 className="text-xl font-bold text-gray-900">{brand}</h2>
         </div>
 
-        <div className="flex items-center gap-4 text-xl">
+        <div className="flex items-center gap-4 text-xl relative">
           <button onClick={toggleMenu}>
             <UserIcon className="w-6 h-6 text-black" />
           </button>
-          <ShoppingCartIcon className="w-6 h-6 text-black" />
+
+          {/* Cart Icon + Badge */}
+          <button onClick={() => navigate("/cart")} className="relative">
+            <ShoppingCartIcon className="w-6 h-6 text-black" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white 
+                w-5 h-5 text-xs flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Searchbar Mobile */}
+      {/* MOBILE Search */}
       <div className="mt-3 w-full flex md:hidden">
         <input
           type="text"
@@ -83,7 +99,7 @@ const Navbar = ({
         </button>
       </div>
 
-      {/* Desktop */}
+      {/* DESKTOP */}
       <div className="hidden md:flex items-center justify-between w-full mt-3">
         <div className="flex items-center gap-3">
           <Bars3Icon className="w-7 h-7 text-black" />
@@ -103,57 +119,44 @@ const Navbar = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 relative">
           <button onClick={toggleMenu} className="flex items-center gap-1">
             <UserIcon className="w-5 h-5 text-black" />
             Account
           </button>
 
-          <button className="flex items-center gap-1">
+          <button
+            onClick={() => navigate("/cart")}
+            className="flex items-center gap-1 relative"
+          >
             <ShoppingCartIcon className="w-5 h-5 text-black" />
-            Carts
+            Cart
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-3 bg-red-600 text-white 
+                w-5 h-5 text-xs flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
           </button>
         </div>
       </div>
 
-      {/* Dropdown */}
+      {/* ACCOUNT MENU */}
       <div
         ref={menuRef}
-        className={`absolute right-4 top-20 bg-white shadow-lg border rounded-md w-48 py-2 z-50 transition-all duration-200 ${
-          showAccountMenu
-            ? "opacity-100 scale-100"
-            : "opacity-0 scale-95 pointer-events-none"
-        }`}
+        className={`absolute right-4 top-20 bg-white shadow-lg border rounded-md 
+          w-48 py-2 z-50 transition-all duration-200 ${
+            showAccountMenu
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
+          }`}
       >
         <button
           onClick={handleLoginLogout}
-          className={`w-[85%] px-4 py-2 text-center rounded-md m-2 text-white transition ${buttonColorClasses}`}
+          className={`w-[85%] px-4 py-2 text-center rounded-md m-2 text-white 
+            transition ${buttonColorClasses}`}
         >
           {isLoggedIn ? "Logout" : "Login"}
-        </button>
-
-        <button
-          className={`w-full px-4 py-2 text-left border-t hover:bg-gray-300 flex gap-2 ${
-            !isLoggedIn && "opacity-50 cursor-not-allowed"
-          }`}
-        >
-          <UserIcon className="w-5 h-5" /> My Account
-        </button>
-
-        <button
-          className={`w-full px-4 py-2 text-left hover:bg-gray-300 flex gap-2 ${
-            !isLoggedIn && "opacity-50 cursor-not-allowed"
-          }`}
-        >
-          <ShoppingBagIcon className="w-5 h-5" /> Orders
-        </button>
-
-        <button
-          className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex gap-2 ${
-            !isLoggedIn && "opacity-50 cursor-not-allowed"
-          }`}
-        >
-          <HeartIcon className="w-5 h-5" /> Wishlist
         </button>
       </div>
     </nav>
